@@ -1,0 +1,22 @@
+services:
+  website:
+    # build:
+    #   context: . # In the current path
+    #   dockerfile: Dockerfile-flask
+    image: python3-flask-img:latest
+    ports:
+      - "8080:80"        # Maps port 8080 on the host to port 80 in the container
+    # volumes:
+    #   - .:/data     # Maps the ./data folder on the host to /data in the container
+    restart: always      # Ensures the container restarts automatically if it stops
+    networks:
+      ddos-project-network:
+        ipv4_address: 1.2.3.69
+    deploy:
+      resources:
+        limits:
+          cpus: '0.05'
+
+networks:
+  ddos-project-network:
+    external: true # tells docker it is an existing network

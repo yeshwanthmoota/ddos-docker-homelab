@@ -1,0 +1,12 @@
+services:
+  attackers:
+    image: ddos-bot:v1
+    deploy:
+      replicas: 100
+    restart: always
+    networks:
+      - ddos-project-network
+
+networks:
+  ddos-project-network:
+    external: true # tells docker it is an existing network

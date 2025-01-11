@@ -1,0 +1,14 @@
+FROM python:3-slim
+
+WORKDIR /main
+
+COPY ../flask-app.py /main/
+
+RUN python -m venv /main/venv \
+    && /main/venv/bin/pip install --upgrade pip \
+    && /main/venv/bin/pip install Flask
+
+# Exposing the application port
+EXPOSE 80
+
+ENTRYPOINT [ "/main/venv/bin/python3", "/main/flask-app.py" ]
