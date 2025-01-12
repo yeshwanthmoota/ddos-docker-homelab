@@ -1,12 +1,13 @@
+
 ### Steps to Set Up and Simulate a DDoS Project Using Docker
 
 ---
 
 #### **Step 1: Build the DDoS Bot Image**
-Create a Docker image named `ddos-bot` with the tag `v1` using the `Dockerfile-ddos-bot` file. Run the following command in the same directory as the Dockerfile:
+Create a Docker image named `ddos-bot` with the tag `v1` using the `Dockerfile-ddos-bot` file. Run the following command in the `dockerfiles` directory:
 
 ```bash
-docker build -f Dockerfile-ddos-bot -t ddos-bot:v1 .
+docker build -f dockerfiles/Dockerfile-ddos-bot -t ddos-bot:v1 .
 ```
 
 ---
@@ -20,20 +21,26 @@ docker network create --subnet 1.2.3.0/24 ddos-project-network
 
 ---
 
-#### **Step 3: Deploy the Website Using Docker Compose**
-Run the `docker-compose-website.yml` file to launch a website container. This file contains details such as:
-- **Web server name and version**: Uses `nginx:latest`.
+#### **Step 3: Deploy the Flask-Based Website**
+Build the `python3-flask-img` Docker image using `Dockerfile-flask`. Run the following command in the `dockerfiles` directory:
+
+```bash
+docker build -f dockerfiles/Dockerfile-flask -t python3-flask-img:latest .
+```
+
+Run the `docker-compose-website.yml` file to launch the Flask website container. This file contains details such as:
+- **Web server**: Flask application served on port 80.
 - **Website container's IP address**: `1.2.3.69` (targeted by the DDoS bot).
 - **Exposed ports**:
   - **80**: Port exposed to the network.
   - **8080**: Port accessible locally on your machine.
-- **Resource limits**: Constraints on CPU and memory for the website container.
+- **Resource limits**: Constraints on CPU for the website container.
 - **Network**: Configured to use `ddos-project-network`.
 
 Run the command below to start the container in detached mode:
 
 ```bash
-docker compose -f docker-compose-website.yml up -d
+docker compose -f dockerfiles/docker-compose-website.yml up -d
 ```
 
 ---
@@ -52,13 +59,13 @@ Run the `docker-compose-ddos-bot.yml` file to start the DDoS botnet. Key details
 Execute the following command to deploy the botnet:
 
 ```bash
-docker compose -f docker-compose-ddos-bot.yml up -d
+docker compose -f dockerfiles/docker-compose-ddos-bot.yml up -d
 ```
 
 ---
 
 #### **Step 6: Monitor the Impact**
-1. **Check resource utilization**: Open Docker Desktop and monitor the website container's CPU and memory usage.
+1. **Check resource utilization**: Open Docker Desktop and monitor the website container's CPU usage.
 2. **View container logs**:
    - For the website container:
      ```bash
@@ -73,4 +80,5 @@ docker compose -f docker-compose-ddos-bot.yml up -d
    - If the website is still accessible, consider lowering the resource limits for the website container in `docker-compose-website.yml` and repeat the test.
 
 ---
-This mini-project walks you through how to simulate a DDoS attack using Docker. By tweaking things like resource limits and the number of attacking containers, you can see how the botnet affects the target and learn more about how containerized networks handle stress. It’s also a great example of how Docker makes it super easy to set up flexible and reusable testing environments.
+
+This updated mini-project introduces a Flask-based application as the website and uses `Dockerfile-ddos-bot` and `Dockerfile-flask`. You can tweak the number of attacking containers and resource limits to observe how the botnet affects the target. It’s a practical demonstration of using Docker for setting up flexible and reusable testing environments.
